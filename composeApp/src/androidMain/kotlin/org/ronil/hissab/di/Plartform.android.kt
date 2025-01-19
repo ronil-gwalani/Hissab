@@ -1,6 +1,8 @@
 package org.ronil.hissab.di
 
+import android.content.Context
 import android.util.Log
+import org.ronil.hissab.utils.AppConstants
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual object Log {
@@ -25,4 +27,9 @@ actual object Log {
 
     }
 
+}
+
+
+internal fun getAndroidPreferencesPath(context: Context): String {
+    return context.filesDir.resolve(AppConstants.Preferences.APP_PREFERENCES).absolutePath
 }

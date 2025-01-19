@@ -10,6 +10,7 @@ plugins {
     // Room Plugin
     alias(libs.plugins.room)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
 
 }
 
@@ -45,7 +46,7 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material)
+            implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -62,6 +63,12 @@ kotlin {
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
             implementation(libs.kotlinx.datetime)
+
+            implementation(libs.navigation.compose)
+            implementation(libs.kotlinx.serialization.json)
+
+            implementation (libs.androidx.datastore.preferences)
+            implementation(libs.datastore)
 
 
 

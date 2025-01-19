@@ -8,3 +8,4 @@ expect object Log {
     fun w(message: Any?,tag: String = "Warning")
     fun i(message: Any?,tag: String = "Info",)
 }
+

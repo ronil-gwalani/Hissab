@@ -21,11 +21,17 @@ lifecycleViewModel = "2.8.7"
 #KOIN
 koin = "4.0.0"
 #Room
+navigationCompose = "2.8.0-alpha10"
 room = "2.7.0-alpha12"
 # ksp (Kotlin Symbol Processing)
 ksp = "2.1.0-1.0.29"
 #sqlite database
 sqlite = "2.5.0-alpha12"
+
+serialization = "1.6.3"
+datastorePreferences = "1.1.2"
+
+
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -52,9 +58,15 @@ koin-compose = {module = "io.insert-koin:koin-compose", version.ref = "koin"}
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 
 #Room dependencies
+navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 room-runtime = {module = "androidx.room:room-runtime", version.ref = "room"}
 room-compiler = {module = "androidx.room:room-compiler", version.ref = "room"}
 sqlite-bundled = {module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite"}
+
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization"}
+
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+datastore = { module = "androidx.datastore:datastore", version.ref = "datastorePreferences" }
 
 
 [plugins]
@@ -66,3 +78,5 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 #Room and KSP plugins
 room = {id = "androidx.room", version.ref = "room"}
 ksp = {id = "com.google.devtools.ksp", version.ref = "ksp"}
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+

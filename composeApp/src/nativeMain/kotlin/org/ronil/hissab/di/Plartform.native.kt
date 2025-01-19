@@ -1,5 +1,9 @@
 package org.ronil.hissab.di
 
+import androidx.datastore.preferences.core.Preferences
+import org.ronil.hissab.database.documentDirectory
+import org.ronil.hissab.utils.AppConstants
+
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual object Log {
 
@@ -22,5 +26,11 @@ actual object Log {
         println("$tag -> $message")
 
     }
+
+}
+
+internal fun getIosPreferencesPath(): String {
+   return documentDirectory() + "/${AppConstants.Preferences.APP_PREFERENCES}"
+
 
 }

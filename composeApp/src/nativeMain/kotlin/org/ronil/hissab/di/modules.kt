@@ -8,4 +8,5 @@ import org.ronil.hissab.database.iosDatabaseBuilder
 
 val iosDatabaseModule = module {
     single<RoomDatabase.Builder<MyRoomDatabase>> { iosDatabaseBuilder() }
+    single { getIosPreferencesPath() }
 }

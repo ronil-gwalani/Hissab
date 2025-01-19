@@ -1,13 +1,18 @@
 package org.ronil.hissab.utils
 
+import androidx.compose.runtime.compositionLocalOf
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.serialization.json.Json
 
 
+val json = Json {
+    ignoreUnknownKeys = true
+}
 
-    fun getCurrentDate(): String {
+fun getCurrentDate(): String {
     val currentMoment: Instant = Clock.System.now()
     val localDateTime = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault())
 
@@ -17,6 +22,7 @@ import kotlinx.datetime.toLocalDateTime
 
     return "$day-$month-$year" // Format as dd-MM-yyyy
 }
+
 fun getCurrentTime(): String {
     val currentMoment: Instant = Clock.System.now()
     val localDateTime = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault())
@@ -28,3 +34,9 @@ fun getCurrentTime(): String {
 
     return "$formattedHour:$minute $amPm" // Format as hh:mm a
 }
+
+val LocalPreferenceManager =
+    compositionLocalOf<PreferenceManager> { error("Preference Manager Not Provided") }
+
+val LocalSnackBarProvider =
+    compositionLocalOf< ShackBarState> { error("ShackBarState  Not Provided") }
