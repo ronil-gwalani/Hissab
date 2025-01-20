@@ -4,15 +4,17 @@ import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
+import org.ronil.hissab.models.ExpenseModel
+import org.ronil.hissab.models.UserModel
 
 @Database(
-    entities = [UserContacts::class],
+    entities = [UserModel::class, ExpenseModel::class],
     version = 1,
     exportSchema = true
 )
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class MyRoomDatabase : RoomDatabase() {
-    abstract fun peopleDao(): PeopleDao
+    abstract fun myRoomDatabaseDao(): MyRoomDatabaseDao
 
 }
 

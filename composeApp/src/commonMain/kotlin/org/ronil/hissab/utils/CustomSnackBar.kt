@@ -53,7 +53,7 @@ class ShackBarState {
         isVisible = true
     }
 
-    fun dismiss() {
+    private fun dismiss() {
         isVisible = false
     }
 
@@ -105,7 +105,7 @@ fun rememberSnackBarState(): ShackBarState {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 2.dp)
-                    .padding(top = 35.dp)
+                    .padding(top = 15.dp)
 //                        .fillMaxWidth()
                     .clip(RoundedCornerShape(5.dp))
                     .wrapContentHeight()

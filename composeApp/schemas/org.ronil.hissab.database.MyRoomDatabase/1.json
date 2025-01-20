@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "3c369f68dec6722d4218c4c5c684b464",
+    "identityHash": "6eeb65998d121561f283b3365b0b861c",
     "entities": [
       {
-        "tableName": "UserContacts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `createdData` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "tableName": "UserModel",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `totalTransaction` REAL NOT NULL, `currentStatus` REAL NOT NULL, `createdDate` TEXT NOT NULL, `createdTime` TEXT NOT NULL, `contactNum` TEXT, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
         "fields": [
           {
             "fieldPath": "name",
@@ -15,8 +15,79 @@
             "notNull": true
           },
           {
-            "fieldPath": "createdData",
-            "columnName": "createdData",
+            "fieldPath": "totalTransaction",
+            "columnName": "totalTransaction",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currentStatus",
+            "columnName": "currentStatus",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdDate",
+            "columnName": "createdDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdTime",
+            "columnName": "createdTime",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "contactNum",
+            "columnName": "contactNum",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "ExpenseModel",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`friendsId` INTEGER NOT NULL, `transactionAmount` REAL NOT NULL, `type` TEXT NOT NULL, `createdDate` TEXT NOT NULL, `createdTime` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "friendsId",
+            "columnName": "friendsId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transactionAmount",
+            "columnName": "transactionAmount",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdDate",
+            "columnName": "createdDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdTime",
+            "columnName": "createdTime",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -37,7 +108,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3c369f68dec6722d4218c4c5c684b464')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6eeb65998d121561f283b3365b0b861c')"
     ]
   }
 }

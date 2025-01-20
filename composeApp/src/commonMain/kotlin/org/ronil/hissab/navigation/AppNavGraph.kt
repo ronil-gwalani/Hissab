@@ -3,13 +3,20 @@ package org.ronil.hissab.navigation
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import org.koin.compose.getKoin
-import org.ronil.hissab.Screens.RegistrationScreen
-import org.ronil.hissab.Screens.SplashScreen
+import org.ronil.hissab.di.Log
+import org.ronil.hissab.models.UserModel
+import org.ronil.hissab.screens.HomeScreen
+import org.ronil.hissab.screens.RegistrationScreen
+import org.ronil.hissab.screens.SplashScreen
+import org.ronil.hissab.screens.UserDetailScreen
+import org.ronil.hissab.utils.AppConstants
 import org.ronil.hissab.utils.LocalPreferenceManager
 import org.ronil.hissab.utils.LocalSnackBarProvider
 import org.ronil.hissab.utils.MyAnimation
@@ -35,14 +42,31 @@ fun SetUpNavGraph() {
 
                 composable<NavRouts.Splash> {
                     SplashScreen {
-                        navController.navigateTo(NavRouts.Register, finish = true)
+                        val screen =
+                            if (preferenceManager.getString(AppConstants.Preferences.USERNAME)
+                                    .isNullOrEmpty()
+                            ) NavRouts.Register else NavRouts.HomeScreen
+                        navController.navigateTo(screen, finish = true)
                     }
 
                 }
                 composable<NavRouts.Register> {
-                    RegistrationScreen()
+                    RegistrationScreen {
+                        navController.navigateTo(NavRouts.HomeScreen, finish = true)
+                    }
                 }
-
+                composable<NavRouts.HomeScreen> {
+                    HomeScreen {
+                        navController.navigateTo(NavRouts.UserDetailScreen(it))
+                    }
+                }
+                composable<NavRouts.UserDetailScreen> {
+                    val data = it.toRoute<NavRouts.UserDetailScreen>()
+                    Log.e(data)
+                    UserDetailScreen(data.userId, {
+                        navController.finish()
+                    })
+                }
 
             }
         }

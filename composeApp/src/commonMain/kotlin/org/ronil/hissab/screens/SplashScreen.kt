@@ -1,4 +1,4 @@
-package org.ronil.hissab.Screens
+package org.ronil.hissab.screens
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -26,7 +26,7 @@ import org.ronil.hissab.utils.AppColors
 
 @Composable
 fun SplashScreen(
-    navigate: () -> Unit,
+    navigate: suspend  () -> Unit,
 ) {
 
     val scale = remember { Animatable(0f) }

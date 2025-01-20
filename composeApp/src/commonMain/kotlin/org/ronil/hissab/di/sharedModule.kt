@@ -6,13 +6,18 @@ import org.koin.dsl.module
 import org.ronil.hissab.repository.MyRepository
 import org.ronil.hissab.database.CreateDatabase
 import org.ronil.hissab.database.MyRoomDatabase
+import org.ronil.hissab.database.MyRoomDatabaseDao
 import org.ronil.hissab.utils.PreferenceManager
-import org.ronil.hissab.viewmodels.TestingVM
+import org.ronil.hissab.viewmodels.HomeVM
+import org.ronil.hissab.viewmodels.UserDetailVM
+import org.ronil.hissab.viewmodels.RegistrationVM
 
 val sharedModule = module {
     single<MyRoomDatabase> { CreateDatabase(get()).getDatabase() }
+    single<MyRoomDatabaseDao>() { get<MyRoomDatabase>().myRoomDatabaseDao() }
     singleOf(::MyRepository)
     singleOf(::PreferenceManager)
-//    viewModel { TestingVM(get()) }  // Use viewModel instead of viewModelOf
-    viewModelOf(::TestingVM)  // Use viewModel instead of viewModelOf
+    viewModelOf(::HomeVM)
+    viewModelOf(::RegistrationVM)
+    viewModelOf(::UserDetailVM)
 }

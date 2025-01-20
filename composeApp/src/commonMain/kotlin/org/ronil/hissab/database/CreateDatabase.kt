@@ -7,7 +7,6 @@ import kotlinx.coroutines.IO
 
 class CreateDatabase(private val builder: RoomDatabase.Builder<MyRoomDatabase>) {
     fun getDatabase(): MyRoomDatabase {
-
         return builder.fallbackToDestructiveMigration(dropAllTables = true)
             .setDriver(BundledSQLiteDriver()).setQueryCoroutineContext(Dispatchers.IO).build()
     }
