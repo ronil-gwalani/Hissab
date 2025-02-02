@@ -9,3 +9,6 @@ expect object Log {
     fun i(message: Any?,tag: String = "Info",)
 }
 
+interface Calling{
+    fun openDialer(number: String)
+}

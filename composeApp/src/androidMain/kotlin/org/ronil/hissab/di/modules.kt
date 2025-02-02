@@ -11,4 +11,6 @@ import org.ronil.hissab.database.androidDatabaseBuilder
 val androidDatabaseModule = module {
     single<RoomDatabase.Builder<MyRoomDatabase>> { androidDatabaseBuilder(androidContext()) }
     single { getAndroidPreferencesPath(get()) }
+    single<Calling> { DialerOpeningImpl(get()) }
+
 }

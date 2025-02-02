@@ -57,13 +57,13 @@ fun SetUpNavGraph() {
                 }
                 composable<NavRouts.HomeScreen> {
                     HomeScreen {
-                        navController.navigateTo(NavRouts.UserDetailScreen(it))
+                        navController.navigateTo(NavRouts.UserDetailScreen(it.id,it.name))
                     }
                 }
                 composable<NavRouts.UserDetailScreen> {
                     val data = it.toRoute<NavRouts.UserDetailScreen>()
                     Log.e(data)
-                    UserDetailScreen(data.userId, {
+                    UserDetailScreen(data.userId,data.userName, {
                         navController.finish()
                     })
                 }

@@ -1,6 +1,9 @@
 package org.ronil.hissab.di
 
 import android.content.Context
+import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.net.Uri
 import android.util.Log
 import org.ronil.hissab.utils.AppConstants
 
@@ -32,4 +35,14 @@ actual object Log {
 
 internal fun getAndroidPreferencesPath(context: Context): String {
     return context.filesDir.resolve(AppConstants.Preferences.APP_PREFERENCES).absolutePath
+}
+
+class DialerOpeningImpl(private val context: Context) : Calling {
+    override fun openDialer(number: String) {
+        val intent = Intent(Intent.ACTION_DIAL).apply {
+            flags=FLAG_ACTIVITY_NEW_TASK
+            data = Uri.parse("tel:$number")
+        }
+        context.startActivity(intent)    }
+
 }

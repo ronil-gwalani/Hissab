@@ -70,6 +70,8 @@ kotlin {
             implementation (libs.androidx.datastore.preferences)
             implementation(libs.datastore)
 
+            // Date Picker
+            implementation(libs.kmp.date.time.picker)
 
 
         }

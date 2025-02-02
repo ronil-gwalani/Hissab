@@ -16,5 +16,5 @@ sealed class NavRouts {
     data object HomeScreen : NavRouts()
 
     @Serializable
-    data class UserDetailScreen(val userId: Int) : NavRouts()
+    data class UserDetailScreen(val userId: Int,val userName: String) : NavRouts()
 }

@@ -3,6 +3,7 @@ package org.ronil.hissab.utils
 import androidx.compose.runtime.compositionLocalOf
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
@@ -23,6 +24,20 @@ fun getCurrentDate(): String {
     return "$day-$month-$year" // Format as dd-MM-yyyy
 }
 
+fun LocalDate.formatDate(): String {
+    val day = this.dayOfMonth.toString().padStart(2, '0') // Ensures two digits
+    val month = this.monthNumber.toString().padStart(2, '0')
+    val year = this.year
+
+    return "$day-$month-$year" // Format as dd-MM-yyyy
+
+}
+fun String.toDate(): LocalDate {
+    // Split the string by "-" to get day, month, year parts
+    val (day, month, year) = this.split("-").map { it.toInt() }
+    return LocalDate(year, month, day)
+}
+
 fun getCurrentTime(): String {
     val currentMoment: Instant = Clock.System.now()
     val localDateTime = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault())
@@ -39,4 +54,4 @@ val LocalPreferenceManager =
     compositionLocalOf<PreferenceManager> { error("Preference Manager Not Provided") }
 
 val LocalSnackBarProvider =
-    compositionLocalOf< ShackBarState> { error("ShackBarState  Not Provided") }
+    compositionLocalOf<ShackBarState> { error("ShackBarState  Not Provided") }
