@@ -27,10 +27,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
@@ -91,8 +93,8 @@ fun UserDetailScreen(
     finish: () -> Unit,
     viewmodel: UserDetailVM = koinViewModel()
 ) {
-    LaunchedEffect(Unit){
-        viewmodel.userId=userId
+    LaunchedEffect(Unit) {
+        viewmodel.userId = userId
     }
 
 
@@ -127,15 +129,14 @@ fun UserDetailScreen(
                         textAlign = TextAlign.Start
                     )
                 },
-//                actions = {
-//                    IconButton(onClick = { /* Handle menu click */ }) {
-//                        Icon(
-//                            Icons.Default.MoreVert,
-//                            contentDescription = "More options",
-//                            tint = Color.Gray
-//                        )
-//                    }
-//                },
+                actions = {
+                    IconButton(onClick = {
+                        viewmodel.searchValue = ""
+                        viewmodel.showSearchField = !viewmodel.showSearchField
+                    }) {
+                        Icon(Icons.Default.Search, "Search")
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.White,
                     titleContentColor = Color.Black
@@ -166,6 +167,31 @@ fun UserDetailScreen(
                 .padding(paddingValues)
         ) {
             // Settlement Card
+            AnimatedVisibility(
+                visible = viewmodel.showSearchField,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                TextField(
+                    value = viewmodel.searchValue,
+                    shape = RoundedCornerShape(15.dp),
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
+                        .getTextFieldModifier(),
+                    colors = getTextFiledColors().copy(unfocusedContainerColor = AppColors.backgroundColor.copy(alpha = 0.4f)),
+                    singleLine = true,
+                    onValueChange = { viewmodel.searchValue = it }, label = {
+                        Text("Search Here...")
+                    }, trailingIcon = {
+                        Icon(
+                            Icons.Default.Clear,
+                            contentDescription = "Clear",
+                            modifier = Modifier.clickable {
+                                viewmodel.searchValue = ""
+                                viewmodel.showSearchField = false
+                            })
+                    }
+                )
+            }
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -239,7 +265,27 @@ fun UserDetailScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(transactions) { transaction ->
+
+                val filteredTransactions = transactions.filter { transaction ->
+                    transaction.reason.contains(
+                        viewmodel.searchValue,
+                        ignoreCase = true
+                    ) || transaction.transactionAmount.toString().contains(
+                        viewmodel.searchValue,
+                        ignoreCase = true
+                    ) || transaction.description?.contains(
+                        viewmodel.searchValue,
+                        ignoreCase = true
+                    ) == true || transaction.date.contains(
+                        viewmodel.searchValue,
+                        ignoreCase = true
+                    ) ||  // Filter by amount
+                    transaction.createdDate.contains(
+                        viewmodel.searchValue,
+                        ignoreCase = true
+                    )   // Filter by amount
+                }
+                items(filteredTransactions) { transaction ->
                     TransactionItem(transaction, onEdit = {
                         viewmodel.reason = it.reason
                         viewmodel.amount = it.transactionAmount.toString()
@@ -289,7 +335,7 @@ fun TransactionItem(
 
     Card(
         onClick = {
-            showBottomSheet=true
+            showBottomSheet = true
         },
         modifier = Modifier
             .fillMaxWidth()

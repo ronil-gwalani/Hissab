@@ -24,6 +24,7 @@ import org.ronil.hissab.utils.getCurrentTime
 class HomeVM(private val repository: MyRepository, private val calling: Calling) : ViewModel() {
     var showBottomSheet by mutableStateOf(false)
     var selectedUser: UserModel? = null
+    var showSearchField by mutableStateOf(false)
 
     var totalCount by mutableStateOf(1)
     private val _users = MutableStateFlow<List<UserModel>>(emptyList())
@@ -31,6 +32,7 @@ class HomeVM(private val repository: MyRepository, private val calling: Calling)
     var showAddDialogue by mutableStateOf(false)
     var name by mutableStateOf("")
     var phoneNum by mutableStateOf("")
+    var searchValue by mutableStateOf("")
 
 
     init {

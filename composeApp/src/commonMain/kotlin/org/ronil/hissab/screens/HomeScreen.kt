@@ -37,6 +37,7 @@ import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
@@ -127,7 +128,7 @@ fun HomeScreen(viewmodel: HomeVM = koinViewModel(), onClick: (UserModel) -> Unit
             TopAppBar(
                 title = {
                     Text(
-                        "Expense Manager",
+                        "Hissab Manager",
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold
                         )
@@ -138,7 +139,9 @@ fun HomeScreen(viewmodel: HomeVM = koinViewModel(), onClick: (UserModel) -> Unit
                     titleContentColor = MaterialTheme.colorScheme.primary
                 ),
                 actions = {
-                    IconButton(onClick = { /* Add search functionality */ }) {
+                    IconButton(onClick = {
+                        viewmodel.searchValue = ""
+                        viewmodel.showSearchField = !viewmodel.showSearchField}) {
                         Icon(Icons.Default.Search, "Search")
                     }
                 }
@@ -174,9 +177,51 @@ fun HomeScreen(viewmodel: HomeVM = koinViewModel(), onClick: (UserModel) -> Unit
                     )
                 }
 
+                item {
+                    AnimatedVisibility(
+                        visible = viewmodel.showSearchField,
+                        enter = fadeIn() + expandVertically(),
+                        exit = fadeOut() + shrinkVertically()
+                    ) {
+                        TextField(
+                            value = viewmodel.searchValue,
+                            shape = RoundedCornerShape(15.dp),
+                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
+                                .getTextFieldModifier(),
+                            colors = getTextFiledColors().copy(unfocusedContainerColor = AppColors.backgroundColor.copy(alpha = 0.4f)),
+                            singleLine = true,
+                            onValueChange = { viewmodel.searchValue = it }, label = {
+                                Text("Search Here...")
+                            }, trailingIcon = {
+                                Icon(
+                                    Icons.Default.Clear,
+                                    contentDescription = "Clear",
+                                    modifier = Modifier.clickable {
+                                        viewmodel.searchValue = ""
+                                        viewmodel.showSearchField = false
+                                    })
+                            }
+                        )
+                    }
+                }
                 // Users List
+                val filteredUsers = users.filter { user ->
+                    user.name.contains(
+                        viewmodel.searchValue,
+                        ignoreCase = true
+                    ) || user.contactNum.toString().contains(
+                        viewmodel.searchValue,
+                        ignoreCase = true
+                    ) || user.createdDate.contains(
+                        viewmodel.searchValue,
+                        ignoreCase = true
+                    ) || user.currentStatus.toString().contains(
+                        viewmodel.searchValue,
+                        ignoreCase = true
+                    )
+                }
                 items(
-                    items = users,
+                    items = filteredUsers,
                     key = { it.id } // Assuming UserModel has an id
                 ) { user ->
                     UserItem(

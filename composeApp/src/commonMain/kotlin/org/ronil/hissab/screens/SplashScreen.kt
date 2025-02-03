@@ -26,7 +26,7 @@ import org.ronil.hissab.utils.AppColors
 
 @Composable
 fun SplashScreen(
-    navigate: suspend  () -> Unit,
+    navigate: suspend () -> Unit,
 ) {
 
     val scale = remember { Animatable(0f) }
@@ -47,16 +47,17 @@ fun SplashScreen(
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(AppColors.accentColor),
+            .fillMaxSize(),
+//            .background(AppColors.accentColor),
         contentAlignment = Alignment.Center
     ) {
 
         Image(
             painter = painterResource(Res.drawable.logo), // Multiplatform resource reference
             contentDescription = "Logo of the app",
-            modifier = Modifier.clip(RoundedCornerShape(1.dp))
-                .scale(scale.value),
+            modifier = Modifier
+                .scale(scale.value)
+                .clip(RoundedCornerShape(100.dp)),
             contentScale = ContentScale.Fit
         )
     }

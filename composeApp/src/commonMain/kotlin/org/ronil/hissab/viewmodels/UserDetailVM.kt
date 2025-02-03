@@ -30,7 +30,7 @@ class UserDetailVM(
 ) : ViewModel() {
 
 
-    var textVisible by mutableStateOf(false)
+    var showSearchField by mutableStateOf(false)
     var showDatePicker by mutableStateOf(false)
     var isEdit by mutableStateOf(false)
     var selectedDate by mutableStateOf(LocalDate.now())
@@ -38,6 +38,7 @@ class UserDetailVM(
     var userId by mutableStateOf<Int?>(null)
     var selectedExpenseId by mutableStateOf<Int?>(null)
     var reason by mutableStateOf<String?>(null)
+    var searchValue by mutableStateOf<String>("")
     var description by mutableStateOf<String?>(null)
     var showAddDialogue by mutableStateOf(false)
 

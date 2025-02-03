@@ -16,8 +16,17 @@ import org.ronil.hissab.utils.AppColors
 
 private val LightColorScheme = lightColorScheme(
     primary = AppColors.accentColor,
+    background = AppColors.whiteColor,
     secondary = AppColors.accentColor,
-    tertiary = AppColors.textColor
+    tertiary = AppColors.textColor,
+    onSecondary = AppColors.textColor,
+    onPrimary = AppColors.whiteColor,
+    onSurface = AppColors.accentColor,
+    onPrimaryContainer = AppColors.accentColor,
+    onSecondaryContainer = AppColors.accentColor,
+    onTertiaryContainer = AppColors.accentColor,
+
+    onTertiary = AppColors.accentColor,
     /* Other default colors to override
     background = RonColor(0xFFFFFBFE),
     surface = RonColor(0xFFFFFBFE),
