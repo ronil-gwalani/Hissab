@@ -57,7 +57,7 @@ fun SplashScreen(
             contentDescription = "Logo of the app",
             modifier = Modifier
                 .scale(scale.value)
-                .clip(RoundedCornerShape(100.dp)),
+                .clip(RoundedCornerShape(500.dp)),
             contentScale = ContentScale.Fit
         )
     }

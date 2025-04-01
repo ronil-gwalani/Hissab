@@ -5,12 +5,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -33,33 +28,23 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -72,12 +57,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -89,17 +72,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
-import hissab.composeapp.generated.resources.Res
-import hissab.composeapp.generated.resources.exchange
-import hissab.composeapp.generated.resources.money
-import kotlinx.coroutines.delay
-import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
-import org.ronil.hissab.di.Log
-import org.ronil.hissab.models.ExpenseModel
 import org.ronil.hissab.models.UserModel
-import org.ronil.hissab.navigation.NavRouts
 import org.ronil.hissab.ui.Typography
 import org.ronil.hissab.utils.AppColors
 import org.ronil.hissab.utils.LocalSnackBarProvider
@@ -141,7 +115,8 @@ fun HomeScreen(viewmodel: HomeVM = koinViewModel(), onClick: (UserModel) -> Unit
                 actions = {
                     IconButton(onClick = {
                         viewmodel.searchValue = ""
-                        viewmodel.showSearchField = !viewmodel.showSearchField}) {
+                        viewmodel.showSearchField = !viewmodel.showSearchField
+                    }) {
                         Icon(Icons.Default.Search, "Search")
                     }
                 }
@@ -149,7 +124,10 @@ fun HomeScreen(viewmodel: HomeVM = koinViewModel(), onClick: (UserModel) -> Unit
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = { viewmodel.showAddDialogue = true },
+                onClick = {
+                    viewmodel.name=""
+                    viewmodel.phoneNum=""
+                    viewmodel.showAddDialogue = true },
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = Color.White
             ) {
@@ -188,7 +166,11 @@ fun HomeScreen(viewmodel: HomeVM = koinViewModel(), onClick: (UserModel) -> Unit
                             shape = RoundedCornerShape(15.dp),
                             modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
                                 .getTextFieldModifier(),
-                            colors = getTextFiledColors().copy(unfocusedContainerColor = AppColors.backgroundColor.copy(alpha = 0.4f)),
+                            colors = getTextFiledColors().copy(
+                                unfocusedContainerColor = AppColors.backgroundColor.copy(
+                                    alpha = 0.4f
+                                )
+                            ),
                             singleLine = true,
                             onValueChange = { viewmodel.searchValue = it }, label = {
                                 Text("Search Here...")
@@ -236,16 +218,8 @@ fun HomeScreen(viewmodel: HomeVM = koinViewModel(), onClick: (UserModel) -> Unit
 
             // Add User Dialog
             if (viewmodel.showAddDialogue) {
-                AddUSerDialogue(
-                    name = viewmodel.name,
-                    onNameChange = { viewmodel.name = it },
-                    phoneNum = viewmodel.phoneNum,
-                    onPhoneNumChange = { viewmodel.phoneNum = it },
-                    cancel = { viewmodel.showAddDialogue = false },
-                    navigate = {
-                        viewmodel.addUser()
-                        viewmodel.showAddDialogue = false
-                    }
+                AddUserDialogue(
+                    viewmodel
                 )
             }
             if (viewmodel.showBottomSheet) {
@@ -253,11 +227,11 @@ fun HomeScreen(viewmodel: HomeVM = koinViewModel(), onClick: (UserModel) -> Unit
                     name = viewmodel.name,
                     onDismiss = { viewmodel.showBottomSheet = false },
                     onCall = {
-                        viewmodel.showBottomSheet=false
-                       viewmodel.callUser(viewmodel.selectedUser?.contactNum)
+                        viewmodel.showBottomSheet = false
+                        viewmodel.callUser(viewmodel.selectedUser?.contactNum)
                     },
                     onDelete = {
-                        viewmodel.showBottomSheet=false
+                        viewmodel.showBottomSheet = false
                         viewmodel.deleteUser()
                     })
             }
@@ -481,21 +455,16 @@ fun Double.format(digits: Int) = this.toString()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AddUSerDialogue(
-    name: String,
-    onNameChange: (String) -> Unit,
-    phoneNum: String,
-    onPhoneNumChange: (String) -> Unit,
-    cancel: () -> Unit,
-    navigate: () -> Unit
-) {
+private fun AddUserDialogue(
+    viewmodel: HomeVM,
+    ) {
 
     val snackBar = LocalSnackBarProvider.current
     BasicAlertDialog(
         modifier = Modifier.clip(RoundedCornerShape(20.dp))
             .background(AppColors.backgroundColor)
             .padding(10.dp),
-        onDismissRequest = { cancel() }
+        onDismissRequest = { viewmodel.showAddDialogue = false }
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -513,33 +482,44 @@ private fun AddUSerDialogue(
             )
 
             TextField(
-                value = name,
+                value = viewmodel.name,
                 shape = RoundedCornerShape(15.dp),
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
-                    .getTextFieldModifier(),
+                modifier = Modifier
+                    .padding(horizontal = 20.dp, vertical = 10.dp)
+                    .then(Modifier.getTextFieldModifier()),
                 colors = getTextFiledColors(),
-
-                onValueChange = onNameChange, label = {
+                singleLine = true,
+                onValueChange = { newValue ->
+                    // Use this approach to preserve cursor position
+                    viewmodel.name = newValue
+                },
+                label = {
                     Text("Enter User's Name")
                 }
             )
             TextField(
-                value = phoneNum,
+                value = viewmodel.phoneNum,
                 shape = RoundedCornerShape(15.dp),
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
                     .getTextFieldModifier(),
-
+                singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 colors = getTextFiledColors(),
-                onValueChange = onPhoneNumChange, label = {
+                onValueChange = {
+                    if (it.isNotEmpty() && it.toLongOrNull() == null) {
+                        return@TextField
+                    }
+                    viewmodel.phoneNum = it
+                }, label = {
                     Text("Enter User's Contact Num (Optional)")
                 }
             )
             Button(modifier = Modifier.padding(vertical = 10.dp), onClick = {
-                if (name.isEmpty()) {
+                if (viewmodel.name.isEmpty()) {
                     snackBar.showNegativeSnackBar("We need name for Identification")
                 } else {
-                    navigate()
+                    viewmodel.addUser()
+                    viewmodel.showAddDialogue = false
                 }
             }) {
                 Text("Save Contact")
@@ -597,7 +577,7 @@ fun ActionsBottomSheet(
             )
 
             HorizontalDivider()
-
+/*
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -617,7 +597,7 @@ fun ActionsBottomSheet(
                     color = Color(0xFF007AFF),
                     modifier = Modifier.padding(start = 16.dp)
                 )
-            }
+            }*/
 
             // Delete Action
             Row(

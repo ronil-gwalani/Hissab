@@ -71,7 +71,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
+import kotlinx.datetime.LocalDate
 import network.chaintech.kmp_date_time_picker.ui.datepicker.WheelDatePickerView
+import network.chaintech.kmp_date_time_picker.utils.now
 import org.koin.compose.viewmodel.koinViewModel
 import org.ronil.hissab.di.Log
 import org.ronil.hissab.models.ExpenseModel
@@ -81,6 +84,7 @@ import org.ronil.hissab.utils.AppColors
 import org.ronil.hissab.utils.LocalSnackBarProvider
 import org.ronil.hissab.utils.formatDate
 import org.ronil.hissab.utils.getTextFiledColors
+import org.ronil.hissab.utils.rememberSnackBarState
 import org.ronil.hissab.utils.toDate
 import org.ronil.hissab.viewmodels.UserDetailVM
 import kotlin.math.abs
@@ -146,6 +150,11 @@ fun UserDetailScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = {
+                    viewmodel.reason = ""
+                    viewmodel.amount = ""
+                    viewmodel.description = ""
+                    viewmodel.selectedDate = LocalDate.now()
+                    viewmodel.selectedExpenseId = null
                     viewmodel.isEdit = false
                     viewmodel.selectedExpenseId = null
 
@@ -177,7 +186,11 @@ fun UserDetailScreen(
                     shape = RoundedCornerShape(15.dp),
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
                         .getTextFieldModifier(),
-                    colors = getTextFiledColors().copy(unfocusedContainerColor = AppColors.backgroundColor.copy(alpha = 0.4f)),
+                    colors = getTextFiledColors().copy(
+                        unfocusedContainerColor = AppColors.backgroundColor.copy(
+                            alpha = 0.4f
+                        )
+                    ),
                     singleLine = true,
                     onValueChange = { viewmodel.searchValue = it }, label = {
                         Text("Search Here...")
@@ -280,10 +293,10 @@ fun UserDetailScreen(
                         viewmodel.searchValue,
                         ignoreCase = true
                     ) ||  // Filter by amount
-                    transaction.createdDate.contains(
-                        viewmodel.searchValue,
-                        ignoreCase = true
-                    )   // Filter by amount
+                            transaction.createdDate.contains(
+                                viewmodel.searchValue,
+                                ignoreCase = true
+                            )   // Filter by amount
                 }
                 items(filteredTransactions) { transaction ->
                     TransactionItem(transaction, onEdit = {
@@ -498,8 +511,14 @@ private fun AddEditExpenseDialogue(
     cancel: () -> Unit,
     navigate: (ExpenseType) -> Unit
 ) {
+    var error by remember { mutableStateOf<String>("") }
     var selectedType by rememberSaveable { mutableStateOf(ExpenseType.GIVEN) }
-    val snackBar = LocalSnackBarProvider.current
+    LaunchedEffect(error) {
+        if (error != "") {
+            delay(2000)
+            error = ""
+        }
+    }
     BasicAlertDialog(
         modifier = Modifier.clip(RoundedCornerShape(20.dp))
             .background(AppColors.backgroundColor)
@@ -511,6 +530,17 @@ private fun AddEditExpenseDialogue(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(vertical = 20.dp)
         ) {
+                AnimatedVisibility(
+                    visible = error!="",
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically()
+                ) {
+                    Text(
+                        error,
+                        color = Color.White,
+                        modifier = Modifier.background(Color.Red).padding(10.dp)
+                    )
+            }
 
             Text(
                 if (viewmodel.isEdit) "Edit Expense" else "Add Expense",
@@ -529,8 +559,10 @@ private fun AddEditExpenseDialogue(
                 colors = getTextFiledColors(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 onValueChange = {
-                    Log.e(it)
-                    it.trim().toDoubleOrNull() ?: return@TextField
+                    if (it.isNotEmpty() && it.toDoubleOrNull() == null) {
+                        return@TextField
+                    }
+
                     it.trim().let {
                         viewmodel.amount = it
                     }
@@ -613,9 +645,9 @@ private fun AddEditExpenseDialogue(
                         .isNullOrEmpty() || ((viewmodel.amount?.toDoubleOrNull()
                         ?: 0.0) <= 0.0)
                 ) {
-                    snackBar.showNegativeSnackBar("Please Enter a valid Amount")
+                    error = "Please Enter a valid Amount"
                 } else if (viewmodel.reason.isNullOrEmpty()) {
-                    snackBar.showNegativeSnackBar("Please Enter a Reason")
+                    error = "Please Enter a Reason"
 
                 } else {
                     navigate(selectedType)
