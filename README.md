@@ -38,8 +38,6 @@ This app was created for **personal use**, especially for people who often forge
 
 👉 [Download Android APK](https://ronildeveloper.in/files/Hissab%20Manger.apk)
 
-*(iOS installation steps coming soon)*
-
 ---
 
 ## 🖼️ Screenshots
